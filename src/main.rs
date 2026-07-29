@@ -32,7 +32,10 @@ fn main() -> anyhow::Result<()> {
     );
 
     if args.headless || args.screenshot.is_some() {
-        gb_emulator::frontend::headless::run_with_screenshot(&args.rom_path, args.screenshot.as_deref())
+        gb_emulator::frontend::headless::run_with_screenshot(
+            &args.rom_path,
+            args.screenshot.as_deref(),
+        )
     } else {
         gb_emulator::frontend::sdl2_gui::run(&args.rom_path)
     }
