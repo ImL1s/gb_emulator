@@ -227,7 +227,7 @@ for entry in "${TEST_MATRIX[@]}"; do
     # Evaluate Pass / Fail condition
     if grep -q "Passed" "${log_file}" && ! grep -q "Failed" "${log_file}"; then
         echo -e "${GREEN}[ PASS ]${NC} (${duration}s)"
-        ((PASSED_COUNT++))
+        PASSED_COUNT=$((PASSED_COUNT + 1))
     else
         if [[ ${exit_code} -eq 124 ]] || grep -q "timed out" "${log_file}"; then
             echo -e "${RED}[ TIMEOUT ]${NC} (${duration}s / limit ${timeout_sec}s)"
@@ -239,7 +239,7 @@ for entry in "${TEST_MATRIX[@]}"; do
             cat "${log_file}" | sed 's/^/  /'
             echo -e "${YELLOW}-----------------------------------------${NC}"
         fi
-        ((FAILED_COUNT++))
+        FAILED_COUNT=$((FAILED_COUNT + 1))
     fi
 done
 
