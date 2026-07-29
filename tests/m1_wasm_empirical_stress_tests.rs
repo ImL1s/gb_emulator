@@ -32,14 +32,23 @@ fn test_wasm_load_rom_invalid_and_valid() {
     assert!(emu.load_rom(&[]).is_err(), "Empty ROM should return Err");
 
     // 2. Truncated ROM
-    assert!(emu.load_rom(&[0u8; 100]).is_err(), "Truncated ROM < 0x150 bytes should return Err");
+    assert!(
+        emu.load_rom(&[0u8; 100]).is_err(),
+        "Truncated ROM < 0x150 bytes should return Err"
+    );
 
     // 3. Corrupt Checksum
-    assert!(emu.load_rom(&[0u8; 0x150]).is_err(), "ROM with invalid header checksum should return Err");
+    assert!(
+        emu.load_rom(&[0u8; 0x150]).is_err(),
+        "ROM with invalid header checksum should return Err"
+    );
 
     // 4. Valid ROM
     let valid_rom = build_valid_dummy_rom();
-    assert!(emu.load_rom(&valid_rom).is_ok(), "Valid 32KB ROM should load successfully");
+    assert!(
+        emu.load_rom(&valid_rom).is_ok(),
+        "Valid 32KB ROM should load successfully"
+    );
 }
 
 #[test]
@@ -98,7 +107,6 @@ fn test_wasm_framebuffer_rgba_unpacking() {
         // Standard default Game Boy palette shade 0 (White 0xFFFFFFFF)
         assert_eq!(a, 0xFF, "Alpha channel of pixel 0 should be 0xFF");
     }
-
 }
 
 #[test]

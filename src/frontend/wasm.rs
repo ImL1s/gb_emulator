@@ -31,11 +31,10 @@ impl WasmEmulator {
         }
     }
 
-
     /// Load raw Game Boy ROM byte slice into emulator cartridge & MMU.
     pub fn load_rom(&mut self, rom_bytes: &[u8]) -> Result<(), String> {
-        let cartridge = cartridge::create_cartridge(rom_bytes.to_vec(), None)
-            .map_err(|e| e.to_string())?;
+        let cartridge =
+            cartridge::create_cartridge(rom_bytes.to_vec(), None).map_err(|e| e.to_string())?;
 
         let mut mmu = Mmu::new();
         mmu.attach_cartridge(cartridge);
@@ -44,7 +43,6 @@ impl WasmEmulator {
         self.cpu = Cpu::new();
         Ok(())
     }
-
 
     /// Step emulator execution for 1 frame (70,224 T-cycles), unpack PPU framebuffer to RGBA bytes, return true.
     pub fn step_frame(&mut self) -> bool {
@@ -55,10 +53,10 @@ impl WasmEmulator {
         }
 
         for (i, &pixel) in self.mmu.ppu.framebuffer.iter().enumerate() {
-            self.rgba_buf[i * 4] = (pixel >> 24) as u8;     // Red
+            self.rgba_buf[i * 4] = (pixel >> 24) as u8; // Red
             self.rgba_buf[i * 4 + 1] = (pixel >> 16) as u8; // Green
-            self.rgba_buf[i * 4 + 2] = (pixel >> 8) as u8;  // Blue
-            self.rgba_buf[i * 4 + 3] = pixel as u8;         // Alpha
+            self.rgba_buf[i * 4 + 2] = (pixel >> 8) as u8; // Blue
+            self.rgba_buf[i * 4 + 3] = pixel as u8; // Alpha
         }
 
         true
