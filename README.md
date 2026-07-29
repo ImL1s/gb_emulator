@@ -7,6 +7,8 @@
 [![Rust](https://img.shields.io/badge/Rust-2021_Edition-orange.svg)](https://www.rust-lang.org/)
 [![Build Status](https://img.shields.io/badge/Tests-100%25_Passing-brightgreen.svg)]()
 
+![Interactive 60FPS Gameplay Demo](docs/demo.gif)
+
 A clean-room, highly accurate Game Boy (DMG / LR35902) emulator written in Rust. Features a modular architecture, accurate cycle timing, PPU 2D rendering pipeline, battery-backed SRAM persistence, an interactive SDL2 GUI window, and a headless verification test harness for automated CI/CD validation.
 
 ---
