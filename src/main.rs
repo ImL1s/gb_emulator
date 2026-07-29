@@ -16,6 +16,10 @@ struct Args {
     /// Run in headless test execution mode
     #[arg(long)]
     headless: bool,
+
+    /// Path to save screen framebuffer output PPM/PNG image
+    #[arg(long)]
+    screenshot: Option<PathBuf>,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -27,8 +31,8 @@ fn main() -> anyhow::Result<()> {
         args.headless
     );
 
-    if args.headless {
-        gb_emulator::frontend::headless::run(&args.rom_path)
+    if args.headless || args.screenshot.is_some() {
+        gb_emulator::frontend::headless::run_with_screenshot(&args.rom_path, args.screenshot.as_deref())
     } else {
         gb_emulator::frontend::sdl2_gui::run(&args.rom_path)
     }

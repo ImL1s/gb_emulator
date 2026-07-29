@@ -1,5 +1,5 @@
 use anyhow::{bail, Result};
-use std::fs;
+use std::fs::{self, File};
 use std::io::{self, Write};
 use std::path::Path;
 use std::time::Instant;
@@ -7,9 +7,15 @@ use std::time::Instant;
 use crate::cartridge;
 use crate::cpu::Cpu;
 use crate::mmu::Mmu;
+use crate::ppu::framebuffer::FramebufferArray;
 
 /// Run Game Boy emulator in headless mode driving test execution loops and monitoring serial output.
 pub fn run(rom_path: &Path) -> Result<()> {
+    run_with_screenshot(rom_path, None)
+}
+
+/// Run Game Boy emulator in headless mode with optional framebuffer screenshot output.
+pub fn run_with_screenshot(rom_path: &Path, screenshot_path: Option<&Path>) -> Result<()> {
     if !rom_path.exists() {
         bail!("ROM file does not exist: {}", rom_path.display());
     }
@@ -42,11 +48,17 @@ pub fn run(rom_path: &Path) -> Result<()> {
 
             if output.contains("Passed") {
                 println!();
+                if let Some(path) = screenshot_path {
+                    save_framebuffer_ppm(&mmu.ppu.framebuffer, path)?;
+                }
                 return Ok(());
             }
 
             if output.contains("Failed") {
                 println!();
+                if let Some(path) = screenshot_path {
+                    save_framebuffer_ppm(&mmu.ppu.framebuffer, path)?;
+                }
                 bail!("Test ROM reported Failure:\n{output}");
             }
         }
@@ -55,7 +67,14 @@ pub fn run(rom_path: &Path) -> Result<()> {
     let output = mmu.get_serial_output();
     if output.contains("Passed") {
         println!();
+        if let Some(path) = screenshot_path {
+            save_framebuffer_ppm(&mmu.ppu.framebuffer, path)?;
+        }
         return Ok(());
+    }
+
+    if let Some(path) = screenshot_path {
+        save_framebuffer_ppm(&mmu.ppu.framebuffer, path)?;
     }
 
     bail!(
@@ -64,4 +83,19 @@ pub fn run(rom_path: &Path) -> Result<()> {
         start_time.elapsed().as_secs(),
         output
     );
+}
+
+fn save_framebuffer_ppm(fb: &FramebufferArray, path: &Path) -> Result<()> {
+    let mut file = File::create(path)?;
+    // P6 binary PPM format header
+    writeln!(file, "P6\n160 144\n255")?;
+    for &color in fb.iter() {
+        let r = ((color >> 24) & 0xFF) as u8;
+        let g = ((color >> 16) & 0xFF) as u8;
+        let b = ((color >> 8) & 0xFF) as u8;
+        file.write_all(&[r, g, b])?;
+    }
+    file.flush()?;
+    println!("Framebuffer screenshot saved to: {}", path.display());
+    Ok(())
 }
