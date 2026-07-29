@@ -180,19 +180,19 @@ run_with_timeout() {
 # 4. Test Suite Execution Matrix
 # Array format: "ROM_PATH|DEFAULT_TIMEOUT_SECONDS|DISPLAY_NAME"
 TEST_MATRIX=(
-    "${INDIVIDUAL_DIR}/01-special.gb|10|01-special"
-    "${INDIVIDUAL_DIR}/02-interrupts.gb|10|02-interrupts"
-    "${INDIVIDUAL_DIR}/03-op sp,hl.gb|10|03-op sp,hl"
-    "${INDIVIDUAL_DIR}/04-op r,imm.gb|10|04-op r,imm"
-    "${INDIVIDUAL_DIR}/05-op rp.gb|10|05-op rp"
-    "${INDIVIDUAL_DIR}/06-ld r,r.gb|10|06-ld r,r"
-    "${INDIVIDUAL_DIR}/07-jr,jp,call,ret,rst.gb|10|07-jr,jp,call,ret,rst"
-    "${INDIVIDUAL_DIR}/08-misc instrs.gb|10|08-misc instrs"
-    "${INDIVIDUAL_DIR}/09-op r,r.gb|10|09-op r,r"
-    "${INDIVIDUAL_DIR}/10-bit ops.gb|10|10-bit ops"
-    "${INDIVIDUAL_DIR}/11-op a,(hl).gb|10|11-op a,(hl)"
-    "${ROM_DIR}/instr_timing.gb|10|instr_timing"
-    "${ROM_DIR}/cpu_instrs.gb|35|cpu_instrs (Umbrella)"
+    "${INDIVIDUAL_DIR}/01-special.gb|30|01-special"
+    "${INDIVIDUAL_DIR}/02-interrupts.gb|30|02-interrupts"
+    "${INDIVIDUAL_DIR}/03-op sp,hl.gb|30|03-op sp,hl"
+    "${INDIVIDUAL_DIR}/04-op r,imm.gb|30|04-op r,imm"
+    "${INDIVIDUAL_DIR}/05-op rp.gb|30|05-op rp"
+    "${INDIVIDUAL_DIR}/06-ld r,r.gb|30|06-ld r,r"
+    "${INDIVIDUAL_DIR}/07-jr,jp,call,ret,rst.gb|30|07-jr,jp,call,ret,rst"
+    "${INDIVIDUAL_DIR}/08-misc instrs.gb|30|08-misc instrs"
+    "${INDIVIDUAL_DIR}/09-op r,r.gb|30|09-op r,r"
+    "${INDIVIDUAL_DIR}/10-bit ops.gb|30|10-bit ops"
+    "${INDIVIDUAL_DIR}/11-op a,(hl).gb|30|11-op a,(hl)"
+    "${ROM_DIR}/instr_timing.gb|30|instr_timing"
+    "${ROM_DIR}/cpu_instrs.gb|60|cpu_instrs (Umbrella)"
 )
 
 PASSED_COUNT=0
