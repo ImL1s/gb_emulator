@@ -1,6 +1,4 @@
-use gb_emulator::cartridge::{
-    create_cartridge, save_sram_atomic, CartridgeError, CartridgeHeader,
-};
+use gb_emulator::cartridge::{create_cartridge, save_sram_atomic, CartridgeError, CartridgeHeader};
 use gb_emulator::mmu::bus::Bus;
 use gb_emulator::mmu::Mmu;
 use std::fs;
@@ -169,7 +167,10 @@ fn stress_test_oam_dma_from_various_memory_regions() {
     }
     mmu.write_byte(0xFF46, 0xFF); // DMA from 0xFF00
     for i in 0..32 {
-        assert_eq!(mmu.read_byte(0xFE00 + 128 + i as u16), (i as u8).wrapping_add(90));
+        assert_eq!(
+            mmu.read_byte(0xFE00 + 128 + i as u16),
+            (i as u8).wrapping_add(90)
+        );
     }
 }
 

@@ -35,6 +35,7 @@ pub struct ScanlineRenderer;
 
 impl ScanlineRenderer {
     /// Render current scanline `ly` into `framebuffer` and return true if window was rendered
+    #[allow(clippy::too_many_arguments)]
     pub fn render_scanline(
         ly: u8,
         lcdc_raw: u8,
@@ -58,7 +59,16 @@ impl ScanlineRenderer {
         let mut bg_color_indices = [0u8; SCREEN_WIDTH];
 
         // 1. Background Layer
-        Self::render_background(ly, lcdc, scy, scx, bgp, vram, framebuffer, &mut bg_color_indices);
+        Self::render_background(
+            ly,
+            lcdc,
+            scy,
+            scx,
+            bgp,
+            vram,
+            framebuffer,
+            &mut bg_color_indices,
+        );
 
         // 2. Window Layer
         let window_rendered = Self::render_window(
@@ -75,12 +85,22 @@ impl ScanlineRenderer {
 
         // 3. Sprite (OBJ) Layer
         if lcdc.sprite_enable() {
-            Self::render_sprites(ly, lcdc, obp0, obp1, vram, oam, framebuffer, &bg_color_indices);
+            Self::render_sprites(
+                ly,
+                lcdc,
+                obp0,
+                obp1,
+                vram,
+                oam,
+                framebuffer,
+                &bg_color_indices,
+            );
         }
 
         window_rendered
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn render_background(
         ly: u8,
         lcdc: Lcdc,
@@ -135,6 +155,7 @@ impl ScanlineRenderer {
         }
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn render_window(
         ly: u8,
         lcdc: Lcdc,
@@ -189,6 +210,7 @@ impl ScanlineRenderer {
         true
     }
 
+    #[allow(clippy::too_many_arguments)]
     fn render_sprites(
         ly: u8,
         lcdc: Lcdc,
@@ -312,7 +334,9 @@ mod tests {
         let lcdc = 0x91; // LCD on, BG on, Tile map 0x9800, Tile data 0x8000 unsigned
         let bgp = 0xE4; // Standard palette
 
-        ScanlineRenderer::render_scanline(0, lcdc, 0, 0, 0, 0, bgp, 0xFF, 0xFF, 0, &vram, &oam, &mut fb);
+        ScanlineRenderer::render_scanline(
+            0, lcdc, 0, 0, 0, 0, bgp, 0xFF, 0xFF, 0, &vram, &oam, &mut fb,
+        );
 
         // First 8 pixels should be shade 3 (black)
         for x in 0..8 {
@@ -337,7 +361,9 @@ mod tests {
         let lcdc = 0x81; // LCD on, BG on, Tile map 0x9800, Tile data 0x9000 signed (bit 4 = 0)
         let bgp = 0xE4;
 
-        ScanlineRenderer::render_scanline(0, lcdc, 0, 0, 0, 0, bgp, 0xFF, 0xFF, 0, &vram, &oam, &mut fb);
+        ScanlineRenderer::render_scanline(
+            0, lcdc, 0, 0, 0, 0, bgp, 0xFF, 0xFF, 0, &vram, &oam, &mut fb,
+        );
 
         for x in 0..8 {
             assert_eq!(fb[x], COLOR_SHADE_3);
@@ -364,7 +390,9 @@ mod tests {
         let bgp = 0xE4;
         let obp0 = 0xE4;
 
-        ScanlineRenderer::render_scanline(0, lcdc, 0, 0, 0, 0, bgp, obp0, 0xFF, 0, &vram, &oam, &mut fb);
+        ScanlineRenderer::render_scanline(
+            0, lcdc, 0, 0, 0, 0, bgp, obp0, 0xFF, 0, &vram, &oam, &mut fb,
+        );
 
         // Pixels 0..4 should be color index 1 (Light Gray)
         assert_eq!(fb[0], super::super::framebuffer::COLOR_SHADE_1);

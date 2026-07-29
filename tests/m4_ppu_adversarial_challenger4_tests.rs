@@ -2,9 +2,7 @@
 //! For M4 Iteration 2: PPU 2D Graphics Engine, Palettes, BG/Window, Sprites, OAM DMA
 
 use gb_emulator::mmu::{Bus, Mmu};
-use gb_emulator::ppu::framebuffer::{
-    COLOR_SHADE_0, COLOR_SHADE_1, COLOR_SHADE_2, COLOR_SHADE_3,
-};
+use gb_emulator::ppu::framebuffer::{COLOR_SHADE_0, COLOR_SHADE_1, COLOR_SHADE_2, COLOR_SHADE_3};
 use gb_emulator::ppu::renderer::ScanlineRenderer;
 use gb_emulator::ppu::Ppu;
 
@@ -215,8 +213,14 @@ fn test_sprite_separate_palettes_obp0_and_obp1() {
         0, lcdc, 0, 0, 0, 0, bgp, obp0, obp1, 0, &vram, &oam, &mut fb,
     );
 
-    assert_eq!(fb[0], COLOR_SHADE_1, "Sprite 0 using OBP0 color 1 should be Light Gray");
-    assert_eq!(fb[8], COLOR_SHADE_2, "Sprite 1 using OBP1 color 1 should be Dark Gray");
+    assert_eq!(
+        fb[0], COLOR_SHADE_1,
+        "Sprite 0 using OBP0 color 1 should be Light Gray"
+    );
+    assert_eq!(
+        fb[8], COLOR_SHADE_2,
+        "Sprite 1 using OBP1 color 1 should be Dark Gray"
+    );
 }
 
 // ============================================================================
@@ -260,7 +264,7 @@ fn test_window_offscreen_wx_does_not_increment_window_line() {
 
     // Enable Window, but place WX = 167 (off-screen right)
     ppu.write_reg(0xFF40, 0xF1);
-    ppu.write_reg(0xFF4A, 0);   // WY = 0
+    ppu.write_reg(0xFF4A, 0); // WY = 0
     ppu.write_reg(0xFF4B, 167); // WX = 167 (offscreen)
 
     assert_eq!(ppu.window_line, 0);

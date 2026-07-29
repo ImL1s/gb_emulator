@@ -401,5 +401,3 @@ mod tests {
         assert_eq!(mmu.read_byte(0xFF10), 0xFF);
     }
 }
-
-

@@ -1,7 +1,7 @@
+use super::{save_sram_atomic, Cartridge};
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
-use super::{save_sram_atomic, Cartridge};
 
 /// MBC5 mapper (up to 8MB ROM, 128KB RAM, 9-bit ROM banking allowing Bank 0).
 pub struct Mbc5 {
@@ -10,9 +10,9 @@ pub struct Mbc5 {
     num_rom_banks: usize,
     num_ram_banks: usize,
     ram_enabled: bool,
-    rom_bank_low: u8,   // 8 bits (0..=255)
-    rom_bank_high: u8,  // 1 bit (bit 8)
-    ram_bank: u8,       // 4 bits (0..=15)
+    rom_bank_low: u8,  // 8 bits (0..=255)
+    rom_bank_high: u8, // 1 bit (bit 8)
+    ram_bank: u8,      // 4 bits (0..=15)
     has_battery: bool,
     save_path: Option<PathBuf>,
     dirty: bool,
@@ -27,7 +27,11 @@ impl Mbc5 {
         sram_data: Option<Vec<u8>>,
     ) -> Self {
         let num_rom_banks = (rom.len() / 16384).max(1);
-        let num_ram_banks = if ram_size > 0 { (ram_size / 8192).max(1) } else { 0 };
+        let num_ram_banks = if ram_size > 0 {
+            (ram_size / 8192).max(1)
+        } else {
+            0
+        };
         let mut ram = vec![0u8; ram_size];
 
         if has_battery {
@@ -104,7 +108,7 @@ impl Cartridge for Mbc5 {
     }
 
     fn read_ram(&self, addr: u16) -> u8 {
-        if !self.ram_enabled || self.num_ram_banks == 0 || addr < 0xA000 || addr > 0xBFFF {
+        if !self.ram_enabled || self.num_ram_banks == 0 || !(0xA000..=0xBFFF).contains(&addr) {
             return 0xFF;
         }
         let bank = self.current_ram_bank();
@@ -113,7 +117,7 @@ impl Cartridge for Mbc5 {
     }
 
     fn write_ram(&mut self, addr: u16, val: u8) {
-        if !self.ram_enabled || self.num_ram_banks == 0 || addr < 0xA000 || addr > 0xBFFF {
+        if !self.ram_enabled || self.num_ram_banks == 0 || !(0xA000..=0xBFFF).contains(&addr) {
             return;
         }
         let bank = self.current_ram_bank();

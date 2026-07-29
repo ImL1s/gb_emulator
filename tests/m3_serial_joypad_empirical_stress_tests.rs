@@ -347,8 +347,15 @@ fn challenge_cpu_halt_wakeup_and_serial_joypad_interrupt_vectors() {
 
     let cycles = cpu.step(&mut mmu);
     assert_eq!(cycles, 20, "Interrupt dispatch must take 20 T-cycles");
-    assert_eq!(cpu.registers.pc, 0x0058, "Serial interrupt vector must be 0x0058");
-    assert_eq!(mmu.read_byte(0xFF0F) & 0x08, 0, "Serial IF bit 3 must be cleared");
+    assert_eq!(
+        cpu.registers.pc, 0x0058,
+        "Serial interrupt vector must be 0x0058"
+    );
+    assert_eq!(
+        mmu.read_byte(0xFF0F) & 0x08,
+        0,
+        "Serial IF bit 3 must be cleared"
+    );
 
     // ------------------------------------------------------------------------
     // B. Joypad Interrupt Vector Dispatch (0x0060) & HALT Wakeup
@@ -358,7 +365,7 @@ fn challenge_cpu_halt_wakeup_and_serial_joypad_interrupt_vectors() {
     cpu.halted = true; // Put CPU into HALT state
 
     mmu.write_byte(0xFF00, 0x20); // Select Directional
-    mmu.press_key(JoypadKey::A);  // Action key pressed -> no transition for Directional
+    mmu.press_key(JoypadKey::A); // Action key pressed -> no transition for Directional
     assert!(cpu.halted);
 
     mmu.press_key(JoypadKey::Right); // Directional key pressed -> transition! IF bit 4 set
@@ -366,7 +373,17 @@ fn challenge_cpu_halt_wakeup_and_serial_joypad_interrupt_vectors() {
 
     let halt_cycles = cpu.step(&mut mmu);
     assert_eq!(halt_cycles, 20);
-    assert!(!cpu.halted, "CPU must wake up from HALT on Joypad interrupt");
-    assert_eq!(cpu.registers.pc, 0x0060, "Joypad interrupt vector must be 0x0060");
-    assert_eq!(mmu.read_byte(0xFF0F) & 0x10, 0, "Joypad IF bit 4 must be cleared");
+    assert!(
+        !cpu.halted,
+        "CPU must wake up from HALT on Joypad interrupt"
+    );
+    assert_eq!(
+        cpu.registers.pc, 0x0060,
+        "Joypad interrupt vector must be 0x0060"
+    );
+    assert_eq!(
+        mmu.read_byte(0xFF0F) & 0x10,
+        0,
+        "Joypad IF bit 4 must be cleared"
+    );
 }

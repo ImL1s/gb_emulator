@@ -1,6 +1,4 @@
-use gb_emulator::cartridge::{
-    create_cartridge, save_sram_atomic, CartridgeError, CartridgeHeader,
-};
+use gb_emulator::cartridge::{create_cartridge, save_sram_atomic, CartridgeError, CartridgeHeader};
 use gb_emulator::mmu::bus::Bus;
 use gb_emulator::mmu::Mmu;
 use std::fs;
@@ -155,11 +153,19 @@ fn challenge_mbc1_bank_0_remapping_and_zero_bank_writes() {
 
     // Write 0 to ROM Bank Low register (0x2000) -> MUST remap 0 to 1
     cart.write_rom(0x2000, 0x00);
-    assert_eq!(cart.read_rom(0x4000), 0x01, "Bank 0 write must remap to Bank 1");
+    assert_eq!(
+        cart.read_rom(0x4000),
+        0x01,
+        "Bank 0 write must remap to Bank 1"
+    );
 
     // Write 0x20 (32) to ROM Bank Low register (0x2000) -> 0x20 & 0x1F = 0 -> MUST remap to 1 (Bank 1)
     cart.write_rom(0x2000, 0x20);
-    assert_eq!(cart.read_rom(0x4000), 0x01, "Bank 0x20 write must remap to Bank 1");
+    assert_eq!(
+        cart.read_rom(0x4000),
+        0x01,
+        "Bank 0x20 write must remap to Bank 1"
+    );
 
     // Select Bank 5
     cart.write_rom(0x2000, 0x05);
@@ -221,7 +227,11 @@ fn challenge_mbc1_ram_enable_disable_protection() {
 
     // RAM initially disabled
     cart.write_ram(0xA000, 0x42);
-    assert_eq!(cart.read_ram(0xA000), 0xFF, "Disabled RAM read must return 0xFF");
+    assert_eq!(
+        cart.read_ram(0xA000),
+        0xFF,
+        "Disabled RAM read must return 0xFF"
+    );
 
     // Enable RAM with 0x0A
     cart.write_rom(0x0000, 0x0A);
@@ -230,12 +240,20 @@ fn challenge_mbc1_ram_enable_disable_protection() {
 
     // Disable RAM with 0x00
     cart.write_rom(0x0000, 0x00);
-    assert_eq!(cart.read_ram(0xA000), 0xFF, "Disabled RAM read must return 0xFF");
+    assert_eq!(
+        cart.read_ram(0xA000),
+        0xFF,
+        "Disabled RAM read must return 0xFF"
+    );
     cart.write_ram(0xA000, 0x99); // Attempt write while disabled
 
     // Re-enable RAM and verify 0x99 was ignored
     cart.write_rom(0x0000, 0x0A);
-    assert_eq!(cart.read_ram(0xA000), 0x42, "Write while RAM disabled must be ignored");
+    assert_eq!(
+        cart.read_ram(0xA000),
+        0x42,
+        "Write while RAM disabled must be ignored"
+    );
 }
 
 // ============================================================================
@@ -261,7 +279,11 @@ fn challenge_mbc3_rom_banking_7bit_and_ram_rtc_latching() {
 
     // Writing Bank 0 remaps to Bank 1 in MBC3
     cart.write_rom(0x2000, 0x00);
-    assert_eq!(cart.read_rom(0x4000), 1, "MBC3 Bank 0 write must remap to Bank 1");
+    assert_eq!(
+        cart.read_rom(0x4000),
+        1,
+        "MBC3 Bank 0 write must remap to Bank 1"
+    );
 
     // --- RTC Register Selection & Latching ---
     // Select RTC Seconds register (0x08)
@@ -304,7 +326,11 @@ fn challenge_mbc5_bank_0_selection_and_9bit_banking() {
 
     // MBC5 ALLOWS Bank 0 at 0x4000..=0x7FFF!
     cart.write_rom(0x2000, 0x00);
-    assert_eq!(cart.read_rom(0x4000), 0x00, "MBC5 MUST allow Bank 0 at 0x4000");
+    assert_eq!(
+        cart.read_rom(0x4000),
+        0x00,
+        "MBC5 MUST allow Bank 0 at 0x4000"
+    );
 
     // 9-bit bank selection: low = 0x00, high = 1 (bit 8) -> Bank 256 % 128 = Bank 0
     cart.write_rom(0x2000, 0x00);
@@ -358,7 +384,11 @@ fn challenge_sram_persistence_full_lifecycle() {
 
     // Verify raw file contents on disk
     let raw_bytes = fs::read(&save_path).expect("Failed to read save file");
-    assert_eq!(raw_bytes.len(), 32768, "Save file size must match RAM size (32KB)");
+    assert_eq!(
+        raw_bytes.len(),
+        32768,
+        "Save file size must match RAM size (32KB)"
+    );
     assert_eq!(raw_bytes[0], 0xAA);
     assert_eq!(raw_bytes[1], 0xBB);
     assert_eq!(raw_bytes[3 * 8192], 0xCC);
@@ -394,7 +424,10 @@ fn challenge_sram_atomic_save_helper() {
     save_sram_atomic(&save_path, &test_data).unwrap();
 
     assert!(save_path.exists(), "Final .sav file must exist");
-    assert!(!tmp_path.exists(), "Temporary .sav.tmp file must be cleaned up");
+    assert!(
+        !tmp_path.exists(),
+        "Temporary .sav.tmp file must be cleaned up"
+    );
 
     let read_back = fs::read(&save_path).unwrap();
     assert_eq!(read_back, test_data);
@@ -431,7 +464,12 @@ fn challenge_mmu_unusable_memory_and_io_unused_bits() {
     // Unusable memory 0xFEA0..=0xFEFF
     for addr in 0xFEA0..=0xFEFF {
         mmu.write_byte(addr, 0x00);
-        assert_eq!(mmu.read_byte(addr), 0xFF, "Unusable memory at {:#06X} must return 0xFF", addr);
+        assert_eq!(
+            mmu.read_byte(addr),
+            0xFF,
+            "Unusable memory at {:#06X} must return 0xFF",
+            addr
+        );
     }
 
     // IF (0xFF0F) top 3 bits must read as 1 (0xE0 mask)

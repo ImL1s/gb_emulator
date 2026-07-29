@@ -28,10 +28,18 @@ mod tests {
         let group = cb_op >> 6;
         if group == 1 {
             // BIT b, r8
-            if is_hl { 12 } else { 8 }
+            if is_hl {
+                12
+            } else {
+                8
+            }
         } else {
             // Rotates/Shifts/Swap (group 0), RES (group 2), SET (group 3)
-            if is_hl { 16 } else { 8 }
+            if is_hl {
+                16
+            } else {
+                8
+            }
         }
     }
 
@@ -73,7 +81,13 @@ mod tests {
 
             // JR e8
             0x18 => 12,
-            0x20 | 0x28 | 0x30 | 0x38 => if taken { 12 } else { 8 },
+            0x20 | 0x28 | 0x30 | 0x38 => {
+                if taken {
+                    12
+                } else {
+                    8
+                }
+            }
 
             // Special Math & Flags
             0x27 | 0x2F | 0x37 | 0x3F => 4,
@@ -99,7 +113,13 @@ mod tests {
             }
 
             // Returns
-            0xC0 | 0xC8 | 0xD0 | 0xD8 => if taken { 20 } else { 8 },
+            0xC0 | 0xC8 | 0xD0 | 0xD8 => {
+                if taken {
+                    20
+                } else {
+                    8
+                }
+            }
             0xC9 | 0xD9 => 16,
 
             // POP & PUSH
@@ -107,12 +127,24 @@ mod tests {
             0xC5 | 0xD5 | 0xE5 | 0xF5 => 16,
 
             // Jumps
-            0xC2 | 0xCA | 0xD2 | 0xDA => if taken { 16 } else { 12 },
+            0xC2 | 0xCA | 0xD2 | 0xDA => {
+                if taken {
+                    16
+                } else {
+                    12
+                }
+            }
             0xC3 => 16,
             0xE9 => 4,
 
             // Calls
-            0xC4 | 0xCC | 0xD4 | 0xDC => if taken { 24 } else { 12 },
+            0xC4 | 0xCC | 0xD4 | 0xDC => {
+                if taken {
+                    24
+                } else {
+                    12
+                }
+            }
             0xCD => 24,
 
             // Immediate ALU
@@ -230,7 +262,8 @@ mod tests {
 
             assert_eq!(
                 cpu.registers.pc, 0xC002,
-                "CB Opcode {:#04X} must advance PC by 2", cb_op
+                "CB Opcode {:#04X} must advance PC by 2",
+                cb_op
             );
         }
     }
@@ -327,7 +360,7 @@ mod tests {
         assert_eq!(cpu.registers.sp, 0x0010);
         assert_eq!(cpu.registers.flag_z(), false); // Z must be 0
         assert_eq!(cpu.registers.flag_n(), false); // N must be 0
-        assert_eq!(cpu.registers.flag_h(), true);  // Half-carry from 0xF + 1
+        assert_eq!(cpu.registers.flag_h(), true); // Half-carry from 0xF + 1
         assert_eq!(cpu.registers.flag_c(), false); // No carry from 0x0F + 1
 
         // LD HL, SP-1 (0xF8)
@@ -355,7 +388,11 @@ mod tests {
 
         cpu.step(&mut bus);
         assert_eq!(cpu.registers.a, 0x00);
-        assert_eq!(cpu.registers.flag_z(), false, "RLCA MUST clear Z flag even if A == 0");
+        assert_eq!(
+            cpu.registers.flag_z(),
+            false,
+            "RLCA MUST clear Z flag even if A == 0"
+        );
 
         // RLC A (CB 0x07) with A = 0x00
         cpu.registers.a = 0x00;
@@ -366,7 +403,11 @@ mod tests {
 
         cpu.step(&mut bus);
         assert_eq!(cpu.registers.a, 0x00);
-        assert_eq!(cpu.registers.flag_z(), true, "CB RLC A MUST set Z flag if A == 0");
+        assert_eq!(
+            cpu.registers.flag_z(),
+            true,
+            "CB RLC A MUST set Z flag if A == 0"
+        );
     }
 
     #[test]
@@ -377,12 +418,16 @@ mod tests {
         cpu.registers.pc = 0xC000;
         cpu.registers.sp = 0xFFFC;
         bus.write_word(0xFFFC, 0x1234); // Stack return PC
-        bus.write_byte(0xC000, 0xD9);   // RETI
+        bus.write_byte(0xC000, 0xD9); // RETI
         cpu.ime_state = ImeState::Disabled;
 
         let cycles = cpu.step(&mut bus);
         assert_eq!(cycles, 16);
         assert_eq!(cpu.registers.pc, 0x1234);
-        assert_eq!(cpu.ime_state, ImeState::Enabled, "RETI must set IME to Enabled immediately");
+        assert_eq!(
+            cpu.ime_state,
+            ImeState::Enabled,
+            "RETI must set IME to Enabled immediately"
+        );
     }
 }

@@ -317,12 +317,31 @@ fn challenge_cpu_timer_interrupt_servicing_full_lifecycle() {
     let cycles = cpu.step(&mut mmu);
 
     assert_eq!(cycles, 20, "Interrupt dispatch must take 20 T-cycles");
-    assert_eq!(cpu.registers.pc, 0x0050, "PC must jump to Timer interrupt vector 0x0050");
+    assert_eq!(
+        cpu.registers.pc, 0x0050,
+        "PC must jump to Timer interrupt vector 0x0050"
+    );
     assert_eq!(cpu.registers.sp, 0xFFFC, "SP must be decremented by 2");
-    assert_eq!(mmu.read_byte(0xFFFC), 0x00, "Low byte of return PC must be on stack");
-    assert_eq!(mmu.read_byte(0xFFFD), 0xC0, "High byte of return PC must be on stack");
-    assert_eq!(mmu.read_byte(0xFF0F) & 0x04, 0, "IF bit 2 must be cleared after service");
-    assert_eq!(cpu.ime_state, ImeState::Disabled, "IME must be disabled post-dispatch");
+    assert_eq!(
+        mmu.read_byte(0xFFFC),
+        0x00,
+        "Low byte of return PC must be on stack"
+    );
+    assert_eq!(
+        mmu.read_byte(0xFFFD),
+        0xC0,
+        "High byte of return PC must be on stack"
+    );
+    assert_eq!(
+        mmu.read_byte(0xFF0F) & 0x04,
+        0,
+        "IF bit 2 must be cleared after service"
+    );
+    assert_eq!(
+        cpu.ime_state,
+        ImeState::Disabled,
+        "IME must be disabled post-dispatch"
+    );
 }
 
 #[test]
@@ -392,9 +411,19 @@ fn challenge_interrupt_servicing_with_ime_disabled_does_not_jump() {
     mmu.write_byte(0xC000, 0x00); // NOP at 0xC000
 
     let cycles = cpu.step(&mut mmu);
-    assert_eq!(cycles, 4, "NOP should execute 4 cycles when IME is disabled");
-    assert_eq!(cpu.registers.pc, 0xC001, "PC should advance to next instruction, not vector");
-    assert_ne!(mmu.read_byte(0xFF0F) & 0x04, 0, "IF bit 2 should remain pending");
+    assert_eq!(
+        cycles, 4,
+        "NOP should execute 4 cycles when IME is disabled"
+    );
+    assert_eq!(
+        cpu.registers.pc, 0xC001,
+        "PC should advance to next instruction, not vector"
+    );
+    assert_ne!(
+        mmu.read_byte(0xFF0F) & 0x04,
+        0,
+        "IF bit 2 should remain pending"
+    );
 }
 
 #[test]
@@ -451,8 +480,15 @@ fn challenge_halt_wakeup_with_ime_disabled_no_vector_jump() {
     let c2 = cpu.step(&mut mmu);
     assert_eq!(c2, 4); // NOP executed
     assert!(!cpu.halted, "CPU must wake up from HALT");
-    assert_eq!(cpu.registers.pc, 0xC002, "PC must execute instruction after HALT");
-    assert_ne!(mmu.read_byte(0xFF0F) & 0x04, 0, "IF bit 2 must remain pending");
+    assert_eq!(
+        cpu.registers.pc, 0xC002,
+        "PC must execute instruction after HALT"
+    );
+    assert_ne!(
+        mmu.read_byte(0xFF0F) & 0x04,
+        0,
+        "IF bit 2 must remain pending"
+    );
 }
 
 #[test]
@@ -526,9 +562,16 @@ fn challenge_reti_inside_timer_interrupt_handler() {
     // Step 2: Execute RETI at 0x0050 (16 cycles)
     let c2 = cpu.step(&mut mmu);
     assert_eq!(c2, 16);
-    assert_eq!(cpu.registers.pc, 0xC000, "RETI must pop return address 0xC000 from stack");
+    assert_eq!(
+        cpu.registers.pc, 0xC000,
+        "RETI must pop return address 0xC000 from stack"
+    );
     assert_eq!(cpu.registers.sp, 0xFFFE, "SP must be restored");
-    assert_eq!(cpu.ime_state, ImeState::Enabled, "RETI must enable IME immediately");
+    assert_eq!(
+        cpu.ime_state,
+        ImeState::Enabled,
+        "RETI must enable IME immediately"
+    );
 }
 
 #[test]

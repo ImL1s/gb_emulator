@@ -118,13 +118,10 @@ fn stress_test_daa_bcd_addition_subtraction_sequences() {
             (daa_res.flags & (Flag::C as u8)) != 0,
             expected_c,
             "BCD Add Carry mismatch for {:#04X} + {:#04X}",
-            x, y
+            x,
+            y
         );
-        assert_eq!(
-            daa_res.flags & (Flag::H as u8),
-            0,
-            "DAA must clear H flag"
-        );
+        assert_eq!(daa_res.flags & (Flag::H as u8), 0, "DAA must clear H flag");
     }
 
     // Test realistic BCD subtraction sequences (e.g. 42 - 27 = 15)
@@ -148,13 +145,10 @@ fn stress_test_daa_bcd_addition_subtraction_sequences() {
             (daa_res.flags & (Flag::C as u8)) != 0,
             expected_c,
             "BCD Sub Carry mismatch for {:#04X} - {:#04X}",
-            x, y
+            x,
+            y
         );
-        assert_eq!(
-            daa_res.flags & (Flag::H as u8),
-            0,
-            "DAA must clear H flag"
-        );
+        assert_eq!(daa_res.flags & (Flag::H as u8), 0, "DAA must clear H flag");
     }
 }
 
@@ -173,7 +167,8 @@ fn stress_test_f_register_lower_4_bits_zero_across_all_opcodes() {
         assert_eq!(
             cpu.registers.f & 0x0F,
             0,
-            "set_f({:#04X}) failed lower 4 bits zero invariant", val
+            "set_f({:#04X}) failed lower 4 bits zero invariant",
+            val
         );
     }
 
@@ -182,7 +177,8 @@ fn stress_test_f_register_lower_4_bits_zero_across_all_opcodes() {
         assert_eq!(
             cpu.registers.f & 0x0F,
             0,
-            "set_af({:#06X}) failed lower 4 bits zero invariant", word
+            "set_af({:#06X}) failed lower 4 bits zero invariant",
+            word
         );
     }
 
@@ -258,11 +254,7 @@ fn stress_test_pop_af_lower_4_bits_masking() {
             "POP AF F register failed to zero lower 4 bits for stack value {:#06X}. Expected {:#04X}, got {:#04X}",
             stack_val, expected_f, cpu.registers.f
         );
-        assert_eq!(
-            cpu.registers.f & 0x0F,
-            0,
-            "POP AF lower 4 bits non-zero"
-        );
+        assert_eq!(cpu.registers.f & 0x0F, 0, "POP AF lower 4 bits non-zero");
     }
 }
 
@@ -514,7 +506,9 @@ fn stress_test_interrupt_priority_order_all_5_pending() {
             bus.read_byte(0xFF0F),
             *remaining_if,
             "Step {}: Expected remaining IF {:#04X}, got {:#04X}",
-            step_idx, remaining_if, bus.read_byte(0xFF0F)
+            step_idx,
+            remaining_if,
+            bus.read_byte(0xFF0F)
         );
         assert_eq!(
             cpu.ime_state,

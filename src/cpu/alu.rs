@@ -26,10 +26,18 @@ impl Alu {
         let c = (a as u16) + (b as u16) > 0xFF;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if n { flags |= Flag::N as u8; }
-        if h { flags |= Flag::H as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if n {
+            flags |= Flag::N as u8;
+        }
+        if h {
+            flags |= Flag::H as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -45,10 +53,18 @@ impl Alu {
         let c = sum > 0xFF;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if n { flags |= Flag::N as u8; }
-        if h { flags |= Flag::H as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if n {
+            flags |= Flag::N as u8;
+        }
+        if h {
+            flags |= Flag::H as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -61,10 +77,18 @@ impl Alu {
         let c = a < b;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if n { flags |= Flag::N as u8; }
-        if h { flags |= Flag::H as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if n {
+            flags |= Flag::N as u8;
+        }
+        if h {
+            flags |= Flag::H as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -80,10 +104,18 @@ impl Alu {
         let c = (a as u16) < (b as u16) + cin;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if n { flags |= Flag::N as u8; }
-        if h { flags |= Flag::H as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if n {
+            flags |= Flag::N as u8;
+        }
+        if h {
+            flags |= Flag::H as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -93,7 +125,9 @@ impl Alu {
         let z = res == 0;
 
         let mut flags = Flag::H as u8; // AND always sets H=1
-        if z { flags |= Flag::Z as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -103,7 +137,9 @@ impl Alu {
         let z = res == 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -113,7 +149,9 @@ impl Alu {
         let z = res == 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -130,10 +168,18 @@ impl Alu {
         let c = (current_flags & Flag::C as u8) != 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if n { flags |= Flag::N as u8; }
-        if h { flags |= Flag::H as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if n {
+            flags |= Flag::N as u8;
+        }
+        if h {
+            flags |= Flag::H as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -146,10 +192,18 @@ impl Alu {
         let c = (current_flags & Flag::C as u8) != 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if n { flags |= Flag::N as u8; }
-        if h { flags |= Flag::H as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if n {
+            flags |= Flag::N as u8;
+        }
+        if h {
+            flags |= Flag::H as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -162,10 +216,18 @@ impl Alu {
         let c = (hl as u32) + (val as u32) > 0xFFFF;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if n { flags |= Flag::N as u8; }
-        if h { flags |= Flag::H as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if n {
+            flags |= Flag::N as u8;
+        }
+        if h {
+            flags |= Flag::H as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -178,8 +240,12 @@ impl Alu {
         let c = (sp & 0xFF) + (raw & 0xFF) > 0xFF;
 
         let mut flags = 0u8;
-        if h { flags |= Flag::H as u8; }
-        if c { flags |= Flag::C as u8; }
+        if h {
+            flags |= Flag::H as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -192,8 +258,12 @@ impl Alu {
         let c = c_out != 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -206,8 +276,12 @@ impl Alu {
         let c = c_out != 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -221,8 +295,12 @@ impl Alu {
         let c = c_out != 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -236,8 +314,12 @@ impl Alu {
         let c = c_out != 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -250,8 +332,12 @@ impl Alu {
         let c = c_out != 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -264,8 +350,12 @@ impl Alu {
         let c = c_out != 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -278,18 +368,24 @@ impl Alu {
         let c = c_out != 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
 
     pub fn swap(val: u8) -> AluResult<u8> {
-        let res = (val >> 4) | (val << 4);
+        let res = val.rotate_left(4);
         let z = res == 0;
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -299,8 +395,12 @@ impl Alu {
         let c = (current_flags & Flag::C as u8) != 0;
 
         let mut flags = Flag::H as u8; // BIT always sets H=1
-        if is_zero { flags |= Flag::Z as u8; }
-        if c { flags |= Flag::C as u8; }
+        if is_zero {
+            flags |= Flag::Z as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         flags & 0xF0
     }
@@ -344,9 +444,15 @@ impl Alu {
         };
 
         let mut flags = 0u8;
-        if res == 0 { flags |= Flag::Z as u8; }
-        if n_set { flags |= Flag::N as u8; }
-        if c_set { flags |= Flag::C as u8; }
+        if res == 0 {
+            flags |= Flag::Z as u8;
+        }
+        if n_set {
+            flags |= Flag::N as u8;
+        }
+        if c_set {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -357,8 +463,12 @@ impl Alu {
         let c = (current_flags & Flag::C as u8) != 0;
 
         let mut flags = (Flag::N as u8) | (Flag::H as u8);
-        if z { flags |= Flag::Z as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         AluResult::new(res, flags)
     }
@@ -367,7 +477,9 @@ impl Alu {
         let z = (current_flags & Flag::Z as u8) != 0;
 
         let mut flags = Flag::C as u8;
-        if z { flags |= Flag::Z as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
 
         flags & 0xF0
     }
@@ -377,8 +489,12 @@ impl Alu {
         let c = (current_flags & Flag::C as u8) == 0; // Invert Carry
 
         let mut flags = 0u8;
-        if z { flags |= Flag::Z as u8; }
-        if c { flags |= Flag::C as u8; }
+        if z {
+            flags |= Flag::Z as u8;
+        }
+        if c {
+            flags |= Flag::C as u8;
+        }
 
         flags & 0xF0
     }
@@ -520,4 +636,3 @@ mod tests {
         assert_eq!(bit_flags_zero & (Flag::Z as u8), Flag::Z as u8);
     }
 }
-

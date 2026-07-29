@@ -10,12 +10,7 @@ pub const COLOR_SHADE_1: u32 = 0xAAAAAAFF; // Light Gray
 pub const COLOR_SHADE_2: u32 = 0x555555FF; // Dark Gray
 pub const COLOR_SHADE_3: u32 = 0x000000FF; // Black
 
-pub const PALETTE_LUT: [u32; 4] = [
-    COLOR_SHADE_0,
-    COLOR_SHADE_1,
-    COLOR_SHADE_2,
-    COLOR_SHADE_3,
-];
+pub const PALETTE_LUT: [u32; 4] = [COLOR_SHADE_0, COLOR_SHADE_1, COLOR_SHADE_2, COLOR_SHADE_3];
 
 pub type FramebufferArray = [u32; FRAMEBUFFER_SIZE];
 

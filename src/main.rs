@@ -22,7 +22,10 @@ fn main() -> anyhow::Result<()> {
     env_logger::init();
     let args = Args::parse();
 
-    log::info!("Game Boy Emulator initialized (headless: {})", args.headless);
+    log::info!(
+        "Game Boy Emulator initialized (headless: {})",
+        args.headless
+    );
 
     if args.headless {
         gb_emulator::frontend::headless::run(&args.rom_path)

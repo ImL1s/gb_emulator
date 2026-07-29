@@ -59,9 +59,15 @@ impl fmt::Display for CartridgeError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             CartridgeError::RomTooSmall(size) => {
-                write!(f, "ROM data is too small: {size} bytes (minimum 0x0150 required)")
+                write!(
+                    f,
+                    "ROM data is too small: {size} bytes (minimum 0x0150 required)"
+                )
             }
-            CartridgeError::InvalidHeaderChecksum { calculated, expected } => {
+            CartridgeError::InvalidHeaderChecksum {
+                calculated,
+                expected,
+            } => {
                 write!(
                     f,
                     "Header checksum mismatch: calculated 0x{calculated:02X}, expected 0x{expected:02X}"
@@ -70,8 +76,12 @@ impl fmt::Display for CartridgeError {
             CartridgeError::UnsupportedCartridgeType(cart_type) => {
                 write!(f, "Unsupported cartridge type: 0x{cart_type:02X}")
             }
-            CartridgeError::InvalidRomSize(code) => write!(f, "Invalid ROM size code: 0x{code:02X}"),
-            CartridgeError::InvalidRamSize(code) => write!(f, "Invalid RAM size code: 0x{code:02X}"),
+            CartridgeError::InvalidRomSize(code) => {
+                write!(f, "Invalid ROM size code: 0x{code:02X}")
+            }
+            CartridgeError::InvalidRamSize(code) => {
+                write!(f, "Invalid RAM size code: 0x{code:02X}")
+            }
             CartridgeError::SaveFileError(msg) => write!(f, "Save file error: {msg}"),
         }
     }
@@ -108,11 +118,17 @@ impl CartridgeHeader {
         }
         let expected = rom_data[0x014D];
         if calculated != expected {
-            return Err(CartridgeError::InvalidHeaderChecksum { calculated, expected });
+            return Err(CartridgeError::InvalidHeaderChecksum {
+                calculated,
+                expected,
+            });
         }
 
         let title_bytes = &rom_data[0x0134..=0x0143];
-        let title_end = title_bytes.iter().position(|&b| b == 0).unwrap_or(title_bytes.len());
+        let title_end = title_bytes
+            .iter()
+            .position(|&b| b == 0)
+            .unwrap_or(title_bytes.len());
         let title = String::from_utf8_lossy(&title_bytes[..title_end]).to_string();
 
         let cgb_flag = rom_data[0x0143];
@@ -218,14 +234,14 @@ pub fn create_cartridge(
             save_path,
             sram_data,
         ))),
-        0x01 | 0x02 | 0x03 => Ok(Box::new(Mbc1::new(
+        0x01..=0x03 => Ok(Box::new(Mbc1::new(
             rom_data,
             ram_size,
             has_battery,
             save_path,
             sram_data,
         ))),
-        0x0F | 0x10 | 0x11 | 0x12 | 0x13 => Ok(Box::new(Mbc3::new(
+        0x0F..=0x13 => Ok(Box::new(Mbc3::new(
             rom_data,
             ram_size,
             has_battery,
@@ -233,7 +249,7 @@ pub fn create_cartridge(
             save_path,
             sram_data,
         ))),
-        0x19 | 0x1A | 0x1B | 0x1C | 0x1D | 0x1E => Ok(Box::new(Mbc5::new(
+        0x19..=0x1E => Ok(Box::new(Mbc5::new(
             rom_data,
             ram_size,
             has_battery,
@@ -312,7 +328,7 @@ mod tests {
     #[test]
     fn test_mbc1_banking_and_ram() {
         let mut rom = build_test_rom(0x03, 0x03, 0x03); // MBC1 + RAM + BATTERY (256KB ROM, 32KB RAM)
-        // Put distinctive bytes in bank 1 and bank 2
+                                                        // Put distinctive bytes in bank 1 and bank 2
         rom[1 * 16384] = 0x11;
         rom[2 * 16384] = 0x22;
 

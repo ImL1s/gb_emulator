@@ -1,7 +1,7 @@
+use super::{save_sram_atomic, Cartridge};
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
-use super::{save_sram_atomic, Cartridge};
 
 /// NoMBC mapper (32KB ROM, optional 8KB RAM, optional battery SRAM save persistence).
 pub struct NoMbc {
@@ -60,7 +60,7 @@ impl Cartridge for NoMbc {
     }
 
     fn read_ram(&self, addr: u16) -> u8 {
-        if self.ram.is_empty() || addr < 0xA000 || addr > 0xBFFF {
+        if self.ram.is_empty() || !(0xA000..=0xBFFF).contains(&addr) {
             return 0xFF;
         }
         let rel_addr = (addr - 0xA000) as usize;
@@ -72,7 +72,7 @@ impl Cartridge for NoMbc {
     }
 
     fn write_ram(&mut self, addr: u16, val: u8) {
-        if self.ram.is_empty() || addr < 0xA000 || addr > 0xBFFF {
+        if self.ram.is_empty() || !(0xA000..=0xBFFF).contains(&addr) {
             return;
         }
         let rel_addr = (addr - 0xA000) as usize;

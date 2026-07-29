@@ -1,7 +1,7 @@
+use super::{save_sram_atomic, Cartridge};
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
-use super::{save_sram_atomic, Cartridge};
 
 #[derive(Debug, Clone, Default)]
 pub struct Rtc {
@@ -57,8 +57,8 @@ pub struct Mbc3 {
     num_rom_banks: usize,
     num_ram_banks: usize,
     ram_rtc_enabled: bool,
-    rom_bank: u8,        // 7 bits (1..=127, 0 maps to 1)
-    ram_rtc_select: u8,  // 0x00..=0x03 for RAM, 0x08..=0x0C for RTC
+    rom_bank: u8,       // 7 bits (1..=127, 0 maps to 1)
+    ram_rtc_select: u8, // 0x00..=0x03 for RAM, 0x08..=0x0C for RTC
     rtc: Rtc,
     has_battery: bool,
     _has_rtc: bool,
@@ -76,7 +76,11 @@ impl Mbc3 {
         sram_data: Option<Vec<u8>>,
     ) -> Self {
         let num_rom_banks = (rom.len() / 16384).max(1);
-        let num_ram_banks = if ram_size > 0 { (ram_size / 8192).max(1) } else { 0 };
+        let num_ram_banks = if ram_size > 0 {
+            (ram_size / 8192).max(1)
+        } else {
+            0
+        };
         let mut ram = vec![0u8; ram_size];
 
         if has_battery {
@@ -115,7 +119,11 @@ impl Cartridge for Mbc3 {
         match addr {
             0x0000..=0x3FFF => self.rom.get(addr as usize).copied().unwrap_or(0xFF),
             0x4000..=0x7FFF => {
-                let bank = if self.rom_bank == 0 { 1 } else { self.rom_bank as usize };
+                let bank = if self.rom_bank == 0 {
+                    1
+                } else {
+                    self.rom_bank as usize
+                };
                 let bank = bank % self.num_rom_banks;
                 let idx = bank * 16384 + ((addr - 0x4000) as usize);
                 self.rom.get(idx).copied().unwrap_or(0xFF)
@@ -150,7 +158,7 @@ impl Cartridge for Mbc3 {
     }
 
     fn read_ram(&self, addr: u16) -> u8 {
-        if !self.ram_rtc_enabled || addr < 0xA000 || addr > 0xBFFF {
+        if !self.ram_rtc_enabled || !(0xA000..=0xBFFF).contains(&addr) {
             return 0xFF;
         }
         match self.ram_rtc_select {
@@ -168,7 +176,7 @@ impl Cartridge for Mbc3 {
     }
 
     fn write_ram(&mut self, addr: u16, val: u8) {
-        if !self.ram_rtc_enabled || addr < 0xA000 || addr > 0xBFFF {
+        if !self.ram_rtc_enabled || !(0xA000..=0xBFFF).contains(&addr) {
             return;
         }
         match self.ram_rtc_select {

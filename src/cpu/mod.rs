@@ -82,7 +82,8 @@ impl Cpu {
         let cycles = if opcode == 0xCB {
             let cb_opcode = self.fetch_byte(bus);
             self.execute_cb(bus, cb_opcode)
-        } else if opcode == 0x76 { // HALT
+        } else if opcode == 0x76 {
+            // HALT
             let ie = bus.read_byte(0xFFFF);
             let if_reg = bus.read_byte(0xFF0F);
             let pending = ie & if_reg & 0x1F;
@@ -253,11 +254,27 @@ mod tests {
             let cycles = cpu.step(&mut bus);
 
             assert_eq!(cycles, 20, "Interrupt dispatch must take 20 T-cycles");
-            assert_eq!(cpu.registers.pc, expected_vector, "PC must jump to vector {:#06X}", expected_vector);
+            assert_eq!(
+                cpu.registers.pc, expected_vector,
+                "PC must jump to vector {:#06X}",
+                expected_vector
+            );
             assert_eq!(cpu.registers.sp, 0xFFFC, "SP must be decremented by 2");
-            assert_eq!(bus.read_word(0xFFFC), 0x0200, "Stack must store return PC 0x0200");
-            assert_eq!(bus.read_byte(0xFF0F) & (1 << bit), 0, "IF bit must be cleared");
-            assert_eq!(cpu.ime_state, ImeState::Disabled, "IME must be disabled post-dispatch");
+            assert_eq!(
+                bus.read_word(0xFFFC),
+                0x0200,
+                "Stack must store return PC 0x0200"
+            );
+            assert_eq!(
+                bus.read_byte(0xFF0F) & (1 << bit),
+                0,
+                "IF bit must be cleared"
+            );
+            assert_eq!(
+                cpu.ime_state,
+                ImeState::Disabled,
+                "IME must be disabled post-dispatch"
+            );
         }
     }
 
@@ -324,4 +341,3 @@ mod tests {
         assert_eq!(cpu.registers.pc, 0x0102);
     }
 }
-

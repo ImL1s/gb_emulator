@@ -2,6 +2,12 @@
 name = "gb_emulator"
 version = "0.1.0"
 edition = "2021"
+authors = ["ImL1s"]
+description = "A clean-room, zero-external-dependency Game Boy (LR35902) emulator written in Rust with SDL2 interactive frontend and headless test harness support."
+license = "MIT"
+repository = "https://github.com/ImL1s/gb_emulator"
+keywords = ["gameboy", "emulator", "lr35902", "rust", "sdl2"]
+categories = ["emulators", "games"]
 
 [dependencies]
 sdl2 = "0.37"

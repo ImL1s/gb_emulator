@@ -1,7 +1,7 @@
+use super::{save_sram_atomic, Cartridge};
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};
-use super::{save_sram_atomic, Cartridge};
 
 /// MBC1 mapper (up to 2MB ROM, 32KB RAM, ROM/RAM mode selection).
 pub struct Mbc1 {
@@ -10,9 +10,9 @@ pub struct Mbc1 {
     num_rom_banks: usize,
     num_ram_banks: usize,
     ram_enabled: bool,
-    rom_bank_low: u8,   // 5 bits (1..=31, 0 maps to 1)
-    ram_bank_high: u8,  // 2 bits (0..=3)
-    banking_mode: u8,   // 0 = ROM mode, 1 = RAM mode
+    rom_bank_low: u8,  // 5 bits (1..=31, 0 maps to 1)
+    ram_bank_high: u8, // 2 bits (0..=3)
+    banking_mode: u8,  // 0 = ROM mode, 1 = RAM mode
     has_battery: bool,
     save_path: Option<PathBuf>,
     dirty: bool,
@@ -27,7 +27,11 @@ impl Mbc1 {
         sram_data: Option<Vec<u8>>,
     ) -> Self {
         let num_rom_banks = (rom.len() / 16384).max(1);
-        let num_ram_banks = if ram_size > 0 { (ram_size / 8192).max(1) } else { 0 };
+        let num_ram_banks = if ram_size > 0 {
+            (ram_size / 8192).max(1)
+        } else {
+            0
+        };
         let mut ram = vec![0u8; ram_size];
 
         if has_battery {
@@ -68,7 +72,11 @@ impl Mbc1 {
     }
 
     fn current_rom_bank_high(&self) -> usize {
-        let low = if self.rom_bank_low == 0 { 1 } else { self.rom_bank_low };
+        let low = if self.rom_bank_low == 0 {
+            1
+        } else {
+            self.rom_bank_low
+        };
         let bank = ((self.ram_bank_high << 5) | low) as usize;
         bank % self.num_rom_banks
     }
@@ -125,7 +133,7 @@ impl Cartridge for Mbc1 {
     }
 
     fn read_ram(&self, addr: u16) -> u8 {
-        if !self.ram_enabled || self.num_ram_banks == 0 || addr < 0xA000 || addr > 0xBFFF {
+        if !self.ram_enabled || self.num_ram_banks == 0 || !(0xA000..=0xBFFF).contains(&addr) {
             return 0xFF;
         }
         let bank = self.current_ram_bank();
@@ -134,7 +142,7 @@ impl Cartridge for Mbc1 {
     }
 
     fn write_ram(&mut self, addr: u16, val: u8) {
-        if !self.ram_enabled || self.num_ram_banks == 0 || addr < 0xA000 || addr > 0xBFFF {
+        if !self.ram_enabled || self.num_ram_banks == 0 || !(0xA000..=0xBFFF).contains(&addr) {
             return;
         }
         let bank = self.current_ram_bank();

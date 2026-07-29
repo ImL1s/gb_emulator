@@ -59,7 +59,11 @@ pub fn run(rom_path: &Path) -> Result<()> {
     let window_title = format!("Game Boy Emulator - {rom_name}");
 
     let window = video_subsystem
-        .window(&window_title, SCREEN_WIDTH * SCALE_FACTOR, SCREEN_HEIGHT * SCALE_FACTOR)
+        .window(
+            &window_title,
+            SCREEN_WIDTH * SCALE_FACTOR,
+            SCREEN_HEIGHT * SCALE_FACTOR,
+        )
         .position_centered()
         .resizable()
         .build()
@@ -72,7 +76,11 @@ pub fn run(rom_path: &Path) -> Result<()> {
         .build()
         .or_else(|_| {
             video_subsystem
-                .window(&window_title, SCREEN_WIDTH * SCALE_FACTOR, SCREEN_HEIGHT * SCALE_FACTOR)
+                .window(
+                    &window_title,
+                    SCREEN_WIDTH * SCALE_FACTOR,
+                    SCREEN_HEIGHT * SCALE_FACTOR,
+                )
                 .position_centered()
                 .build()
                 .map_err(|e| anyhow::anyhow!("Window creation fallback error: {e}"))?
@@ -115,8 +123,7 @@ pub fn run(rom_path: &Path) -> Result<()> {
                 }
 
                 Event::KeyUp {
-                    keycode: Some(kc),
-                    ..
+                    keycode: Some(kc), ..
                 } => {
                     if let Some(key) = map_keycode(kc) {
                         mmu.release_key(key);
@@ -136,10 +143,10 @@ pub fn run(rom_path: &Path) -> Result<()> {
 
         // 3. Unpack PPU u32 RGBA framebuffer to pixel bytes and update texture
         for (i, &pixel) in mmu.ppu.framebuffer.iter().enumerate() {
-            pixel_bytes[i * 4] = (pixel >> 24) as u8;     // Red
+            pixel_bytes[i * 4] = (pixel >> 24) as u8; // Red
             pixel_bytes[i * 4 + 1] = (pixel >> 16) as u8; // Green
-            pixel_bytes[i * 4 + 2] = (pixel >> 8) as u8;  // Blue
-            pixel_bytes[i * 4 + 3] = pixel as u8;         // Alpha
+            pixel_bytes[i * 4 + 2] = (pixel >> 8) as u8; // Blue
+            pixel_bytes[i * 4 + 3] = pixel as u8; // Alpha
         }
 
         texture

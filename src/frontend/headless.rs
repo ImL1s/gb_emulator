@@ -47,7 +47,7 @@ pub fn run(rom_path: &Path) -> Result<()> {
 
             if output.contains("Failed") {
                 println!();
-                bail!("Test ROM reported Failure:\n{}", output);
+                bail!("Test ROM reported Failure:\n{output}");
             }
         }
     }

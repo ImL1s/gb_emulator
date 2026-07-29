@@ -62,10 +62,22 @@ impl Registers {
     }
 
     // Direct convenience getters
-    #[inline(always)] pub fn flag_z(&self) -> bool { self.get_flag(Flag::Z) }
-    #[inline(always)] pub fn flag_n(&self) -> bool { self.get_flag(Flag::N) }
-    #[inline(always)] pub fn flag_h(&self) -> bool { self.get_flag(Flag::H) }
-    #[inline(always)] pub fn flag_c(&self) -> bool { self.get_flag(Flag::C) }
+    #[inline(always)]
+    pub fn flag_z(&self) -> bool {
+        self.get_flag(Flag::Z)
+    }
+    #[inline(always)]
+    pub fn flag_n(&self) -> bool {
+        self.get_flag(Flag::N)
+    }
+    #[inline(always)]
+    pub fn flag_h(&self) -> bool {
+        self.get_flag(Flag::H)
+    }
+    #[inline(always)]
+    pub fn flag_c(&self) -> bool {
+        self.get_flag(Flag::C)
+    }
 
     // --- 16-bit Register Pair Accessors ---
     #[inline(always)]
@@ -185,4 +197,3 @@ mod tests {
         assert_eq!(regs.hl(), 0x9ABC);
     }
 }
-

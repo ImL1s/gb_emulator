@@ -52,17 +52,33 @@ impl Joypad {
         let mut line = 0x0F;
 
         if !self.select_direction {
-            if self.right { line &= !(1 << 0); }
-            if self.left  { line &= !(1 << 1); }
-            if self.up    { line &= !(1 << 2); }
-            if self.down  { line &= !(1 << 3); }
+            if self.right {
+                line &= !(1 << 0);
+            }
+            if self.left {
+                line &= !(1 << 1);
+            }
+            if self.up {
+                line &= !(1 << 2);
+            }
+            if self.down {
+                line &= !(1 << 3);
+            }
         }
 
         if !self.select_action {
-            if self.a      { line &= !(1 << 0); }
-            if self.b      { line &= !(1 << 1); }
-            if self.select { line &= !(1 << 2); }
-            if self.start  { line &= !(1 << 3); }
+            if self.a {
+                line &= !(1 << 0);
+            }
+            if self.b {
+                line &= !(1 << 1);
+            }
+            if self.select {
+                line &= !(1 << 2);
+            }
+            if self.start {
+                line &= !(1 << 3);
+            }
         }
 
         let select_bits = ((self.select_action as u8) << 5) | ((self.select_direction as u8) << 4);
@@ -86,14 +102,14 @@ impl Joypad {
         let old_line = self.read_joyp() & 0x0F;
 
         match key {
-            JoypadKey::Right  => self.right = true,
-            JoypadKey::Left   => self.left = true,
-            JoypadKey::Up     => self.up = true,
-            JoypadKey::Down   => self.down = true,
-            JoypadKey::A      => self.a = true,
-            JoypadKey::B      => self.b = true,
+            JoypadKey::Right => self.right = true,
+            JoypadKey::Left => self.left = true,
+            JoypadKey::Up => self.up = true,
+            JoypadKey::Down => self.down = true,
+            JoypadKey::A => self.a = true,
+            JoypadKey::B => self.b = true,
             JoypadKey::Select => self.select = true,
-            JoypadKey::Start  => self.start = true,
+            JoypadKey::Start => self.start = true,
         }
 
         let new_line = self.read_joyp() & 0x0F;
@@ -103,14 +119,14 @@ impl Joypad {
     /// Release a button. Releasing never triggers a High-to-Low transition (no interrupt).
     pub fn release_key(&mut self, key: JoypadKey) {
         match key {
-            JoypadKey::Right  => self.right = false,
-            JoypadKey::Left   => self.left = false,
-            JoypadKey::Up     => self.up = false,
-            JoypadKey::Down   => self.down = false,
-            JoypadKey::A      => self.a = false,
-            JoypadKey::B      => self.b = false,
+            JoypadKey::Right => self.right = false,
+            JoypadKey::Left => self.left = false,
+            JoypadKey::Up => self.up = false,
+            JoypadKey::Down => self.down = false,
+            JoypadKey::A => self.a = false,
+            JoypadKey::B => self.b = false,
             JoypadKey::Select => self.select = false,
-            JoypadKey::Start  => self.start = false,
+            JoypadKey::Start => self.start = false,
         }
     }
 }

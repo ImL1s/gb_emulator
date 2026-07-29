@@ -3,7 +3,7 @@
 use gb_emulator::mmu::Bus;
 use gb_emulator::mmu::Mmu;
 use gb_emulator::ppu::framebuffer::{
-    COLOR_SHADE_0, COLOR_SHADE_1, COLOR_SHADE_2, COLOR_SHADE_3, resolve_palette_color,
+    resolve_palette_color, COLOR_SHADE_0, COLOR_SHADE_1, COLOR_SHADE_2, COLOR_SHADE_3,
 };
 use gb_emulator::ppu::renderer::ScanlineRenderer;
 use gb_emulator::ppu::{Ppu, PpuMode};
@@ -72,14 +72,20 @@ fn challenge_bg_tile_map_selection_0x9800_vs_0x9c00() {
     ScanlineRenderer::render_scanline(
         0, lcdc_9800, 0, 0, 0, 0, bgp, 0xFF, 0xFF, 0, &vram, &oam, &mut fb,
     );
-    assert_eq!(fb[0], COLOR_SHADE_1, "Map 0x9800 should render tile 1 (Light Gray)");
+    assert_eq!(
+        fb[0], COLOR_SHADE_1,
+        "Map 0x9800 should render tile 1 (Light Gray)"
+    );
 
     // Test map 0x9C00 (LCDC bit 3 = 1)
     let lcdc_9c00 = 0x99; // 1001 1001
     ScanlineRenderer::render_scanline(
         0, lcdc_9c00, 0, 0, 0, 0, bgp, 0xFF, 0xFF, 0, &vram, &oam, &mut fb,
     );
-    assert_eq!(fb[0], COLOR_SHADE_3, "Map 0x9C00 should render tile 2 (Black)");
+    assert_eq!(
+        fb[0], COLOR_SHADE_3,
+        "Map 0x9C00 should render tile 2 (Black)"
+    );
 }
 
 #[test]
@@ -119,8 +125,14 @@ fn challenge_bg_tile_data_unsigned_0x8000_vs_signed_0x8800() {
     ScanlineRenderer::render_scanline(
         0, 0x81, 0, 0, 0, 0, bgp, 0xFF, 0xFF, 0, &vram, &oam, &mut fb,
     );
-    assert_eq!(fb[0], COLOR_SHADE_3, "Signed tile 0 (at 0x9000) should be Black");
-    assert_eq!(fb[8], COLOR_SHADE_2, "Signed tile 128 (at 0x8800) should be Dark Gray");
+    assert_eq!(
+        fb[0], COLOR_SHADE_3,
+        "Signed tile 0 (at 0x9000) should be Black"
+    );
+    assert_eq!(
+        fb[8], COLOR_SHADE_2,
+        "Signed tile 128 (at 0x8800) should be Dark Gray"
+    );
 }
 
 #[test]
@@ -139,7 +151,19 @@ fn challenge_bg_disabled_dmg_blank_color() {
     // LCDC bit 0 = 0 (BG disabled)
     let lcdc_bg_off = 0x90; // 1001 0000
     ScanlineRenderer::render_scanline(
-        0, lcdc_bg_off, 0, 0, 0, 0, bgp, 0xFF, 0xFF, 0, &vram, &oam, &mut fb,
+        0,
+        lcdc_bg_off,
+        0,
+        0,
+        0,
+        0,
+        bgp,
+        0xFF,
+        0xFF,
+        0,
+        &vram,
+        &oam,
+        &mut fb,
     );
 
     // With BG disabled on DMG, screen should be blank color 0 (White)
@@ -179,7 +203,11 @@ fn challenge_window_positioning_wx_wy() {
         5, lcdc, 0, 0, 10, 15, bgp, 0xFF, 0xFF, 0, &vram, &oam, &mut fb,
     );
     assert!(!rendered_win_ly5, "Window should not render on LY < WY");
-    assert_eq!(fb[5 * 160 + 8], COLOR_SHADE_0, "LY=5 pixel 8 should be BG White");
+    assert_eq!(
+        fb[5 * 160 + 8],
+        COLOR_SHADE_0,
+        "LY=5 pixel 8 should be BG White"
+    );
 
     // Scanline LY = 10 (LY == WY, window rendered starting at X=8)
     let rendered_win_ly10 = ScanlineRenderer::render_scanline(
@@ -188,11 +216,21 @@ fn challenge_window_positioning_wx_wy() {
     assert!(rendered_win_ly10, "Window should render on LY >= WY");
     // Pixels 0..7 should be BG White
     for x in 0..8 {
-        assert_eq!(fb[10 * 160 + x], COLOR_SHADE_0, "Pixel x={} should be BG White", x);
+        assert_eq!(
+            fb[10 * 160 + x],
+            COLOR_SHADE_0,
+            "Pixel x={} should be BG White",
+            x
+        );
     }
     // Pixels 8..15 should be Window Black
     for x in 8..16 {
-        assert_eq!(fb[10 * 160 + x], COLOR_SHADE_3, "Pixel x={} should be Window Black", x);
+        assert_eq!(
+            fb[10 * 160 + x],
+            COLOR_SHADE_3,
+            "Pixel x={} should be Window Black",
+            x
+        );
     }
 }
 
@@ -218,8 +256,14 @@ fn challenge_window_wx_less_than_7_offset() {
         0, lcdc, 0, 0, 0, 0, bgp, 0xFF, 0xFF, 0, &vram, &oam, &mut fb,
     );
 
-    assert_eq!(fb[0], COLOR_SHADE_0, "Screen pixel 0 (win x=7) should be tile 0 (White)");
-    assert_eq!(fb[1], COLOR_SHADE_3, "Screen pixel 1 (win x=8) should be tile 1 (Black)");
+    assert_eq!(
+        fb[0], COLOR_SHADE_0,
+        "Screen pixel 0 (win x=7) should be tile 0 (White)"
+    );
+    assert_eq!(
+        fb[1], COLOR_SHADE_3,
+        "Screen pixel 1 (win x=8) should be tile 1 (Black)"
+    );
 }
 
 #[test]
@@ -231,7 +275,7 @@ fn challenge_window_internal_line_counter() {
     // Enable Window: WX = 7 (screen X=0), WY = 10, LCDC = 0xF1
     ppu.write_reg(0xFF40, 0xF1);
     ppu.write_reg(0xFF4A, 10); // WY = 10
-    ppu.write_reg(0xFF4B, 7);  // WX = 7
+    ppu.write_reg(0xFF4B, 7); // WX = 7
 
     assert_eq!(ppu.window_line, 0);
 
@@ -245,12 +289,18 @@ fn challenge_window_internal_line_counter() {
     ppu.step(5 * 456, &vram, &oam);
     assert_eq!(ppu.regs.ly, 15);
     // Window rendered on scanlines 10, 11, 12, 13, 14 -> window_line should be 5
-    assert_eq!(ppu.window_line, 5, "window_line should be 5 after 5 window lines rendered");
+    assert_eq!(
+        ppu.window_line, 5,
+        "window_line should be 5 after 5 window lines rendered"
+    );
 
     // Step to VBlank (LY=144)
     ppu.step((144 - 15) * 456, &vram, &oam);
     assert_eq!(ppu.regs.ly, 144);
-    assert_eq!(ppu.window_line, 0, "window_line should reset to 0 on VBlank");
+    assert_eq!(
+        ppu.window_line, 0,
+        "window_line should reset to 0 on VBlank"
+    );
 }
 
 // ============================================================================
@@ -283,20 +333,30 @@ fn challenge_sprite_8x8_and_8x16_modes() {
     ScanlineRenderer::render_scanline(
         0, 0x93, 0, 0, 0, 0, bgp, obp0, 0xFF, 0, &vram, &oam, &mut fb,
     );
-    assert_eq!(fb[0], COLOR_SHADE_2, "8x8 mode should use tile 3 (Dark Gray)");
+    assert_eq!(
+        fb[0], COLOR_SHADE_2,
+        "8x8 mode should use tile 3 (Dark Gray)"
+    );
 
     // 2. 8x16 Mode (LCDC bit 2 = 1 -> LCDC = 0x97)
     // In 8x16 mode, tile 3 has bit 0 masked to 0 for top 8x8 half -> uses Tile 2 (Light Gray)!
     ScanlineRenderer::render_scanline(
         0, 0x97, 0, 0, 0, 0, bgp, obp0, 0xFF, 0, &vram, &oam, &mut fb,
     );
-    assert_eq!(fb[0], COLOR_SHADE_1, "8x16 mode top half should use tile 2 (Light Gray)");
+    assert_eq!(
+        fb[0], COLOR_SHADE_1,
+        "8x16 mode top half should use tile 2 (Light Gray)"
+    );
 
     // On scanline LY = 8 (bottom 8x8 half of 8x16 sprite), uses Tile 3 (Dark Gray)!
     ScanlineRenderer::render_scanline(
         8, 0x97, 0, 0, 0, 0, bgp, obp0, 0xFF, 0, &vram, &oam, &mut fb,
     );
-    assert_eq!(fb[8 * 160], COLOR_SHADE_2, "8x16 mode bottom half should use tile 3 (Dark Gray)");
+    assert_eq!(
+        fb[8 * 160],
+        COLOR_SHADE_2,
+        "8x16 mode bottom half should use tile 3 (Dark Gray)"
+    );
 }
 
 #[test]
@@ -326,7 +386,10 @@ fn challenge_sprite_x_flip_and_y_flip() {
     ScanlineRenderer::render_scanline(
         0, lcdc, 0, 0, 0, 0, bgp, obp0, 0xFF, 0, &vram, &oam, &mut fb,
     );
-    assert_eq!(fb[0], COLOR_SHADE_3, "Y-flipped row 0 should be tile row 7 (Black)");
+    assert_eq!(
+        fb[0], COLOR_SHADE_3,
+        "Y-flipped row 0 should be tile row 7 (Black)"
+    );
 
     // Render scanline LY = 7 (bottom of sprite).
     // Because Y-flip is set, LY=7 renders row 0 of tile (left half color 1).
@@ -335,9 +398,17 @@ fn challenge_sprite_x_flip_and_y_flip() {
         7, lcdc, 0, 0, 0, 0, bgp, obp0, 0xFF, 0, &vram, &oam, &mut fb,
     );
     // Pixels 0..3 should be transparent/BG White (since tile row 0 right half is color 0)
-    assert_eq!(fb[7 * 160 + 0], COLOR_SHADE_0, "X-flipped left side should be transparent/BG");
+    assert_eq!(
+        fb[7 * 160 + 0],
+        COLOR_SHADE_0,
+        "X-flipped left side should be transparent/BG"
+    );
     // Pixels 4..7 should be color 1 (Light Gray)
-    assert_eq!(fb[7 * 160 + 4], COLOR_SHADE_1, "X-flipped right side should be Light Gray");
+    assert_eq!(
+        fb[7 * 160 + 4],
+        COLOR_SHADE_1,
+        "X-flipped right side should be Light Gray"
+    );
 }
 
 #[test]
@@ -353,9 +424,9 @@ fn challenge_sprite_10_per_line_limit() {
     // Place 15 sprites on scanline LY = 0 (Y=16)
     for i in 0..15 {
         let addr = i * 4;
-        oam[addr] = 16;     // Y = 0 on screen
+        oam[addr] = 16; // Y = 0 on screen
         oam[addr + 1] = (i as u8) * 8 + 8; // X = i * 8
-        oam[addr + 2] = 1;  // Tile 1
+        oam[addr + 2] = 1; // Tile 1
         oam[addr + 3] = 0;
     }
 
@@ -370,18 +441,22 @@ fn challenge_sprite_10_per_line_limit() {
     // First 10 sprites (x = 0..10*8 = 0..80) should be rendered (Black color 3)
     for i in 0..10 {
         assert_eq!(
-            fb[i * 8], COLOR_SHADE_3,
+            fb[i * 8],
+            COLOR_SHADE_3,
             "Sprite {} (x={}) should be rendered",
-            i, i * 8
+            i,
+            i * 8
         );
     }
 
     // Sprites 10..14 (x = 80..120) should NOT be rendered (remain BG White color 0)
     for i in 10..15 {
         assert_eq!(
-            fb[i * 8], COLOR_SHADE_0,
+            fb[i * 8],
+            COLOR_SHADE_0,
             "Sprite {} (x={}) should be ignored due to 10 sprite/line limit",
-            i, i * 8
+            i,
+            i * 8
         );
     }
 }
@@ -421,7 +496,10 @@ fn challenge_sprite_priority_dmg_x_and_oam_index() {
     );
 
     // Sprite 1 at X=0 has smaller X -> rendered at X=0 (Dark Gray)
-    assert_eq!(fb[0], COLOR_SHADE_2, "Sprite 1 (smaller X) should render at X=0");
+    assert_eq!(
+        fb[0], COLOR_SHADE_2,
+        "Sprite 1 (smaller X) should render at X=0"
+    );
     // Sprite 0 at X=8 rendered at X=8 (Light Gray)
     assert_eq!(fb[8], COLOR_SHADE_1, "Sprite 0 should render at X=8");
 
@@ -473,9 +551,15 @@ fn challenge_sprite_transparency_color_0() {
     );
 
     // Pixels 0..3 of sprite are color index 0 -> transparent, so BG color 2 (Dark Gray) shows through!
-    assert_eq!(fb[0], COLOR_SHADE_2, "Sprite color 0 should be transparent and show BG");
+    assert_eq!(
+        fb[0], COLOR_SHADE_2,
+        "Sprite color 0 should be transparent and show BG"
+    );
     // Pixels 4..7 of sprite are color index 3 -> opaque Black (color 3)
-    assert_eq!(fb[4], COLOR_SHADE_3, "Sprite color 3 should be opaque Black");
+    assert_eq!(
+        fb[4], COLOR_SHADE_3,
+        "Sprite color 3 should be opaque Black"
+    );
 }
 
 // ============================================================================
@@ -795,7 +879,8 @@ fn challenge_multi_cycle_step_full_frame_70224_cycles_and_multiple_frames() {
                 ppu_single.framebuffer[y * 160 + x],
                 COLOR_SHADE_1,
                 "Pixel ({}, {}) should be Light Gray after full frame single step",
-                x, y
+                x,
+                y
             );
         }
     }
@@ -850,7 +935,8 @@ fn challenge_multi_cycle_step_arbitrary_odd_step_sizes() {
                 ppu.framebuffer[y * 160 + x],
                 COLOR_SHADE_2,
                 "Pixel ({}, {}) should be Dark Gray",
-                x, y
+                x,
+                y
             );
         }
     }
@@ -870,7 +956,10 @@ fn challenge_multi_cycle_step_lyc_stat_interrupt_triggering() {
     ppu.step(44 * 456, &vram, &oam);
     assert_eq!(ppu.regs.ly, 44);
     assert_eq!(ppu.read_reg(0xFF41) & 0x04, 0); // STAT bit 2 (LYC==LY) false
-    assert!(!ppu.stat_interrupt, "STAT interrupt should not trigger before LYC");
+    assert!(
+        !ppu.stat_interrupt,
+        "STAT interrupt should not trigger before LYC"
+    );
 
     // Clear any previous STAT interrupt flag
     ppu.stat_interrupt = false;
@@ -878,8 +967,15 @@ fn challenge_multi_cycle_step_lyc_stat_interrupt_triggering() {
     // Step 456 cycles in ONE call to advance from LY=44 to LY=45
     ppu.step(456, &vram, &oam);
     assert_eq!(ppu.regs.ly, 45);
-    assert_ne!(ppu.read_reg(0xFF41) & 0x04, 0, "STAT bit 2 (LYC==LY) should be set at LY=45");
-    assert!(ppu.stat_interrupt, "STAT interrupt should fire when stepping through LYC=45");
+    assert_ne!(
+        ppu.read_reg(0xFF41) & 0x04,
+        0,
+        "STAT bit 2 (LYC==LY) should be set at LY=45"
+    );
+    assert!(
+        ppu.stat_interrupt,
+        "STAT interrupt should fire when stepping through LYC=45"
+    );
 }
 
 #[test]
@@ -902,7 +998,7 @@ fn challenge_multi_cycle_step_window_rendering_and_line_counter() {
     ppu.write_reg(0xFF47, 0xE4);
     ppu.write_reg(0xFF40, 0xF1);
     ppu.write_reg(0xFF4A, 10); // WY = 10
-    ppu.write_reg(0xFF4B, 7);  // WX = 7 (Screen X = 0)
+    ppu.write_reg(0xFF4B, 7); // WX = 7 (Screen X = 0)
 
     // Step 456 * 10 cycles (reaches LY=10)
     ppu.step(456 * 10, &vram, &oam);
@@ -927,8 +1023,8 @@ fn challenge_multi_cycle_step_window_rendering_and_line_counter() {
     // Step remaining scanlines to reach LY=144 (VBlank)
     ppu.step(456 * (144 - 60), &vram, &oam);
     assert_eq!(ppu.regs.ly, 144);
-    assert_eq!(ppu.window_line, 0, "window_line should reset to 0 at VBlank");
+    assert_eq!(
+        ppu.window_line, 0,
+        "window_line should reset to 0 at VBlank"
+    );
 }
-
-
-

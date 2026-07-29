@@ -3,10 +3,10 @@ pub mod lcd;
 pub mod renderer;
 
 pub use framebuffer::{
-    COLOR_SHADE_0, COLOR_SHADE_1, COLOR_SHADE_2, COLOR_SHADE_3, FramebufferArray, SCREEN_HEIGHT,
+    FramebufferArray, COLOR_SHADE_0, COLOR_SHADE_1, COLOR_SHADE_2, COLOR_SHADE_3, SCREEN_HEIGHT,
     SCREEN_WIDTH,
 };
-pub use lcd::{Lcdc, LcdRegs, Stat};
+pub use lcd::{LcdRegs, Lcdc, Stat};
 pub use renderer::ScanlineRenderer;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -170,7 +170,7 @@ impl Ppu {
                     self.scanline_cycles = 0;
                     self.window_line = 0;
                     self.mode = PpuMode::HBlank;
-                    self.regs.stat = (self.regs.stat & 0xFC) | 0x00;
+                    self.regs.stat &= 0xFC;
                     self.prev_stat_line = false;
                 } else if !old_enable && new_enable {
                     self.regs.ly = 0;
