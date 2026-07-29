@@ -3,6 +3,7 @@
 ![Game Boy Emulator in Rust](docs/hero.jpg)
 
 [![CI](https://github.com/ImL1s/gb_emulator/actions/workflows/ci.yml/badge.svg)](https://github.com/ImL1s/gb_emulator/actions/workflows/ci.yml)
+[![Live WASM Web Demo](https://img.shields.io/badge/Play_Online-WebAssembly-brightgreen.svg)](https://iml1s.github.io/gb_emulator/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Rust](https://img.shields.io/badge/Rust-2021_Edition-orange.svg)](https://www.rust-lang.org/)
 [![Build Status](https://img.shields.io/badge/Tests-100%25_Passing-brightgreen.svg)]()
