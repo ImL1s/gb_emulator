@@ -1,6 +1,9 @@
+#[cfg(not(target_arch = "wasm32"))]
 use clap::Parser;
+#[cfg(not(target_arch = "wasm32"))]
 use std::path::PathBuf;
 
+#[cfg(not(target_arch = "wasm32"))]
 #[derive(Parser, Debug)]
 #[command(
     name = "gb_emulator",
@@ -22,6 +25,7 @@ struct Args {
     screenshot: Option<PathBuf>,
 }
 
+#[cfg(not(target_arch = "wasm32"))]
 fn main() -> anyhow::Result<()> {
     env_logger::init();
     let args = Args::parse();
@@ -40,3 +44,6 @@ fn main() -> anyhow::Result<()> {
         gb_emulator::frontend::sdl2_gui::run(&args.rom_path)
     }
 }
+
+#[cfg(target_arch = "wasm32")]
+fn main() {}

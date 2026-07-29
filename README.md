@@ -85,6 +85,16 @@ cargo run --release -- examples/2048.gb
 cargo run --release -- path/to/game.gb
 ```
 
+### Running the WebAssembly (WASM) Browser Player
+```bash
+# Build WASM binary package
+./scripts/build_wasm.sh
+
+# Serve locally in browser
+python3 -m http.server 8080 --directory web
+```
+Open [http://localhost:8080](http://localhost:8080) in your browser to play `2048-gb` interactively with zero setup!
+
 ### CLI Command Options
 | Option | Description | Example |
 | :--- | :--- | :--- |

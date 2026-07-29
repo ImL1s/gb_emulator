@@ -9,9 +9,18 @@ repository = "https://github.com/ImL1s/gb_emulator"
 keywords = ["gameboy", "emulator", "lr35902", "rust", "sdl2"]
 categories = ["emulators", "games"]
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 [dependencies]
-sdl2 = "0.37"
-clap = { version = "4.5", features = ["derive"] }
 anyhow = "1.0"
 log = "0.4"
+wasm-bindgen = "0.2"
+console_error_panic_hook = "0.1"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+sdl2 = "0.37"
+clap = { version = "4.5", features = ["derive"] }
 env_logger = "0.11"
+
+

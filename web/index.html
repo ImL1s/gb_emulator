@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Game Boy Web Emulator (LR35902)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="emulator-container">
+    <!-- Header / Control Strip -->
+    <header class="header-bar">
+      <h1 class="logo">GAME BOY <span class="logo-sub">WASM</span></h1>
+      <div class="top-controls">
+        <label for="rom-input" class="btn btn-file">
+          📂 Load ROM
+          <input type="file" id="rom-input" accept=".gb,.rom">
+        </label>
+        <button id="btn-load-2048" class="btn btn-preset">🎮 Load 2048 Game</button>
+        <select id="palette-select" class="dropdown">
+          <option value="green">Retro Green (DMG)</option>
+          <option value="grayscale">Classic Grayscale</option>
+          <option value="pocket">Pocket Gold</option>
+        </select>
+        <button id="pause-btn" class="btn btn-action" disabled>⏸ Pause</button>
+      </div>
+    </header>
+
+    <!-- Game Boy Housing / Bezel -->
+    <main class="gb-bezel">
+      <div class="screen-header">
+        <span class="power-indicator" id="power-led"></span>
+        <span class="bezel-title">DOT MATRIX WITH STEREO SOUND</span>
+      </div>
+
+      <!-- Canvas Frame / Drop Zone -->
+      <div class="canvas-wrapper" id="drop-zone">
+        <canvas id="gb-canvas" width="160" height="144"></canvas>
+        <div id="drop-overlay" class="drop-overlay hidden">
+          <div class="drop-text">📥 Drop .GB File Here</div>
+        </div>
+      </div>
+
+      <!-- Status Bar -->
+      <div class="status-bar">
+        <span id="status-title">ROM: None</span>
+        <span id="status-fps">FPS: --</span>
+        <span id="status-state" class="state-badge">Ready</span>
+      </div>
+    </main>
+
+    <!-- On-Screen Touch Controls (Mobile Friendly) -->
+    <section class="controls-container">
+      <!-- D-Pad -->
+      <div class="dpad">
+        <button class="dpad-btn dpad-up" data-key="up" aria-label="Up">▲</button>
+        <button class="dpad-btn dpad-down" data-key="down" aria-label="Down">▼</button>
+        <button class="dpad-btn dpad-left" data-key="left" aria-label="Left">◀</button>
+        <button class="dpad-btn dpad-right" data-key="right" aria-label="Right">▶</button>
+        <div class="dpad-center"></div>
+      </div>
+
+      <!-- Center Action Buttons (Select / Start) -->
+      <div class="center-buttons">
+        <div class="pillar-btn-group">
+          <button class="pillar-btn" data-key="select" id="btn-select">SELECT</button>
+        </div>
+        <div class="pillar-btn-group">
+          <button class="pillar-btn" data-key="start" id="btn-start">START</button>
+        </div>
+      </div>
+
+      <!-- Action Buttons (A / B) -->
+      <div class="action-buttons">
+        <div class="action-btn-wrapper b-wrapper">
+          <button class="action-btn" data-key="b" id="btn-b">B</button>
+        </div>
+        <div class="action-btn-wrapper a-wrapper">
+          <button class="action-btn" data-key="a" id="btn-a">A</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Keyboard Controls Legend -->
+    <footer class="controls-legend">
+      <div class="legend-item"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> D-Pad</div>
+      <div class="legend-item"><kbd>Z</kbd> A Button</div>
+      <div class="legend-item"><kbd>X</kbd> B Button</div>
+      <div class="legend-item"><kbd>Enter</kbd> Start</div>
+      <div class="legend-item"><kbd>Shift</kbd> Select</div>
+    </footer>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -4,3 +4,7 @@
 *.ppm
 .agents/
 tests/roms/
+.wasm-pack-cache/
+cargo_bin/
+tools/
+wasm_tools/
