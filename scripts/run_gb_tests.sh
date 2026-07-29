@@ -218,10 +218,8 @@ for entry in "${TEST_MATRIX[@]}"; do
     
     start_time=$(date +%s)
     
-    set +e
-    run_with_timeout "${timeout_sec}" "${log_file}" "${TARGET_BIN}" --headless "${rom_path}"
-    exit_code=$?
-    set -e
+    exit_code=0
+    run_with_timeout "${timeout_sec}" "${log_file}" "${TARGET_BIN}" --headless "${rom_path}" || exit_code=$?
 
     end_time=$(date +%s)
     duration=$((end_time - start_time))
