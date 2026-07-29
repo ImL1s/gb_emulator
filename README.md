@@ -2,6 +2,7 @@
 
 ![Game Boy Emulator in Rust](docs/hero.jpg)
 
+[![CI](https://github.com/ImL1s/gb_emulator/actions/workflows/ci.yml/badge.svg)](https://github.com/ImL1s/gb_emulator/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Rust](https://img.shields.io/badge/Rust-2021_Edition-orange.svg)](https://www.rust-lang.org/)
 [![Build Status](https://img.shields.io/badge/Tests-100%25_Passing-brightgreen.svg)]()
@@ -34,7 +35,7 @@ A clean-room, highly accurate Game Boy (DMG / LR35902) emulator written in Rust.
 - **User Interface & Test Automation**:
   - Interactive SDL2 window running smoothly at 60 FPS.
   - Keyboard controls mapping.
-  - Automated headless runner mode (`--headless`) for batch test ROM verification.
+  - Automated headless runner mode (`--headless`) and framebuffer export (`--screenshot`).
 
 ---
 
@@ -77,10 +78,17 @@ cargo run --release -- examples/2048.gb
 ```
 ![2048 Game Boy Rendered Screenshot](docs/2048_rendered.png)
 
-### Running any Game ROM
+### Running Any Commercial or Custom Game ROM
 ```bash
 cargo run --release -- path/to/game.gb
 ```
+
+### CLI Command Options
+| Option | Description | Example |
+| :--- | :--- | :--- |
+| `<ROM_PATH>` | Path to `.gb` game cartridge ROM file | `cargo run --release -- game.gb` |
+| `--headless` | Run in headless execution mode without opening GUI window | `cargo run --release -- --headless test.gb` |
+| `--screenshot <PATH>` | Save rendered 160x144 framebuffer screenshot to PPM file | `cargo run --release -- --screenshot out.ppm game.gb` |
 
 ---
 
@@ -124,36 +132,36 @@ All 13 test ROMs pass cleanly with `Exit Code 0`.
 ## 🏛️ Project Architecture
 
 ```
-src/
-├── main.rs               # Main CLI entry point & clap argument parsing
-├── lib.rs                # Core library exports
-├── cpu/                  # LR35902 CPU core implementation
-│   ├── mod.rs            # CPU state machine & cycle execution step
-│   ├── opcodes.rs        # 256 Base & 256 CB opcode dispatchers
-│   ├── registers.rs      # Registers AF, BC, DE, HL, SP, PC & flags
-│   └── alu.rs            # Arithmetic Logic Unit helpers
-├── mmu/                  # Memory Management Unit & Bus
-│   ├── bus.rs            # Memory bus read/write router
-│   ├── ram.rs            # VRAM, WRAM, HRAM, OAM memory structures
-│   └── mod.rs            # MMU wrapper
-├── cartridge/            # Cartridge Memory Bank Controllers
-│   ├── mbcless.rs        # NoMBC implementation
-│   ├── mbc1.rs           # MBC1 controller & banking logic
-│   ├── mbc3.rs           # MBC3 controller & RTC latching
-│   ├── mbc5.rs           # MBC5 controller (9-bit ROM banking)
-│   └── mod.rs            # Cartridge header parsing & factory
-├── ppu/                  # Picture Processing Unit
-│   ├── mod.rs            # PPU state machine, STAT interrupts, mode timing
-│   ├── renderer.rs       # Background, Window, and Sprite scanline renderer
-│   ├── lcd.rs            # LCD control & status register handlers
-│   └── framebuffer.rs   # 160x144 Framebuffer array representation
-├── timer/                # Hardware Timer (DIV, TIMA, TMA, TAC)
-├── serial/               # Serial Data Transfer (SB, SC)
-├── joypad/               # Joypad Input Matrix (0xFF00)
-└── frontend/             # Display & Input Frontends
-    ├── sdl2_gui.rs       # SDL2 60FPS Window & event loop
-    └── headless.rs       # Headless test runner & serial output capturer
+gb_emulator/
+├── .cargo/
+│   └── config.toml       # Automatic Homebrew SDL2 linker search paths
+├── .github/
+│   └── workflows/
+│       ├── ci.yml        # Multi-platform CI pipeline (fmt, clippy, tests, blargg)
+│       └── release.yml   # Multi-platform release asset builder (Linux, macOS, Windows)
+├── docs/                 # Documentation assets & screenshots
+├── examples/             # Included open-source homebrew games (2048-GB)
+├── scripts/
+│   └── run_gb_tests.sh   # Headless Blargg test ROM runner script
+├── src/
+│   ├── main.rs           # CLI entry point & clap argument parser
+│   ├── lib.rs            # Core emulator library exports
+│   ├── cpu/              # LR35902 CPU implementation (opcodes, registers, ALU)
+│   ├── mmu/              # Memory Management Unit & Bus router
+│   ├── cartridge/        # Cartridge bank controllers (NoMBC, MBC1, MBC3, MBC5)
+│   ├── ppu/              # Picture Processing Unit (LCD, renderer, framebuffer)
+│   ├── timer/            # Hardware Timer (DIV, TIMA, TMA, TAC)
+│   ├── serial/           # Serial Data Transfer (SB, SC)
+│   ├── joypad/           # Joypad Input Matrix (0xFF00)
+│   └── frontend/         # SDL2 GUI window & headless runner
+└── tests/                # Comprehensive adversarial integration test suite
 ```
+
+---
+
+## ⚖️ Legal Disclaimer
+
+This emulator is built strictly for educational, research, and legal homebrew testing purposes. This project does NOT distribute copyrighted commercial Game Boy ROMs. All sample games included in this repository (such as `2048.gb`) are open-source and released under permissive licenses (e.g. Zlib License).
 
 ---
 
