@@ -1,5 +1,7 @@
 # Game Boy (LR35902) Emulator in Rust
 
+![Game Boy Emulator in Rust](docs/hero.jpg)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Rust](https://img.shields.io/badge/Rust-2021_Edition-orange.svg)](https://www.rust-lang.org/)
 [![Build Status](https://img.shields.io/badge/Tests-100%25_Passing-brightgreen.svg)]()
