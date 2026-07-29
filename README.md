@@ -71,7 +71,13 @@ Ensure `SDL2.dll` is installed or available in your `%PATH%` or crate build path
 cargo build --release
 ```
 
-### Running a Game ROM
+### Running the Included Open-Source Game (2048-GB)
+```bash
+cargo run --release -- examples/2048.gb
+```
+![2048 Game Boy Rendered Screenshot](docs/2048_rendered.png)
+
+### Running any Game ROM
 ```bash
 cargo run --release -- path/to/game.gb
 ```
